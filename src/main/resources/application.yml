@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: authenticatorApp
+  h2:
+    console:
+      enabled: true
+      path: /console/
