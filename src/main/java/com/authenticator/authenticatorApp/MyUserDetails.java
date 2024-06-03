@@ -1,30 +1,35 @@
 package com.authenticator.authenticatorApp;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.authenticator.authenticatorApp.entity.Role;
 import com.authenticator.authenticatorApp.entity.UserInfo;
 
 public class MyUserDetails implements UserDetails{
 	
 	private UserInfo user;
 	
-
 	public MyUserDetails(UserInfo user) {
-		super();
 		this.user = user;
 	}
 
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<Role> roles = user.getRoles();
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 		
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
-		// TODO Auto-generated method stub
-		return Arrays.asList(authority);
+		for (Role role : roles) {
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		}
+		return authorities;
 	}
 
 	@Override
@@ -39,9 +44,5 @@ public class MyUserDetails implements UserDetails{
 		return user.getUsername();
 	}
 	
-	public String getEmail() {
-		// TODO Auto-generated method stub
-		return user.getEmail();
-	}
 
 }

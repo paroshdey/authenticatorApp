@@ -26,8 +26,6 @@ public class SecurityConfig  {
     @Autowired
     private OauthSuccessHandler oauthLoginSuccessHandler;
      
-    @Autowired
-    private LocalSuccessHandler databaseLoginSuccessHandler;
     
     @Bean
 	public UserDetailsService userDetailsService() {
@@ -69,10 +67,10 @@ public class SecurityConfig  {
 	                .permitAll()
 	                .usernameParameter("email")
 	                .passwordParameter("password")
-	                .successHandler(databaseLoginSuccessHandler))
-		 .logout(logout -> logout
-				 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				 .permitAll())
+	                .successForwardUrl("/index"))
+		 .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.permitAll()
+                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                 .logoutSuccessUrl("/login"))
 		 .oauth2Login(oauth2Login -> oauth2Login
 				 .loginPage("/login")
 				 .successHandler(oauthLoginSuccessHandler)
