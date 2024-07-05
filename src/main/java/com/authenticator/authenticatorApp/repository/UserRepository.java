@@ -9,8 +9,7 @@ import com.authenticator.authenticatorApp.entity.UserInfo;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserInfo, Long> {
-
-	
+		
 	@Query("SELECT u FROM UserInfo u WHERE u.username = :username")
 	public UserInfo getUserByUsername(@Param("username") String username);
  

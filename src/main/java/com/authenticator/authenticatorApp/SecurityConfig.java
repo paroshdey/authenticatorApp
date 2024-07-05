@@ -18,68 +18,50 @@ import com.authenticator.authenticatorApp.serviceImpl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
-	
+public class SecurityConfig {
+
 	@Autowired
-    private CustomOAuth2UserService oauth2UserService;
-     
-    @Autowired
-    private OauthSuccessHandler oauthLoginSuccessHandler;
-     
-    
-    @Bean
+	private CustomOAuth2UserService oauth2UserService;
+
+	//@Autowired
+	//private OauthSuccessHandler oauthLoginSuccessHandler;
+
+	@Bean
 	public UserDetailsService userDetailsService() {
 		return new UserDetailsServiceImpl();
 	}
-	
+
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
-		
+
 		return authProvider;
 	}
-	
+
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
+
 	@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		
-		 http
-		 .exceptionHandling(e -> e
-				 .accessDeniedPage("/403"))
-		 .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
-		 .csrf(csrf -> csrf
-				 .disable())
-         .authorizeHttpRequests(authz -> authz
-        		 .requestMatchers("/","/**", "/login", "/oauth/**" ,"/console/**").permitAll()
-        		 .anyRequest().authenticated())
-		 .formLogin(formLogin -> formLogin
-	                .loginPage("/login")
-	                .permitAll()
-	                .usernameParameter("email")
-	                .passwordParameter("password")
-	                .successForwardUrl("/index"))
-		 .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.permitAll()
-                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                 .logoutSuccessUrl("/login"))
-		 .oauth2Login(oauth2Login -> oauth2Login
-				 .loginPage("/login")
-				 .successHandler(oauthLoginSuccessHandler)
-				 .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
-						 .userService(oauth2UserService)));
-				 
- return http.build();
-	
-	
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+		http.exceptionHandling(e -> e.accessDeniedPage("/403"))
+				.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable)).csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "/**", "/login", "/oauth/**", "/console/**")
+						.permitAll().anyRequest().authenticated())
+				.formLogin(formLogin -> formLogin.loginPage("/login").permitAll().usernameParameter("email")
+						.passwordParameter("password").successForwardUrl("/index"))
+				.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.permitAll()
+						.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login"));
+		return http.build();
+
 	}
 
 }

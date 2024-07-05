@@ -1,15 +1,20 @@
 package com.authenticator.authenticatorApp.serviceImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.authenticator.authenticatorApp.MyUserDetails;
+import com.authenticator.authenticatorApp.controller.HomeController;
 import com.authenticator.authenticatorApp.entity.UserInfo;
 import com.authenticator.authenticatorApp.repository.UserRepository;
 
 public class UserDetailsServiceImpl implements UserDetailsService{
+	
+	Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 	
 	@Autowired
 	UserRepository userRepo;
@@ -17,15 +22,13 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		System.out.println("fetching user info username"+username);
+		logger.info("user found ");
 		
 		UserInfo user = userRepo.getUserByUsername(username);
 		
-		System.out.println("fetched user ::"+user.getUsername());
-		
-		if(user == null)
+		if(user.getUsername() == null  || user.getUsername().isEmpty())
 		{
-			throw new UsernameNotFoundException(username);
+			throw new UsernameNotFoundException("user does not exist ::"+username);
 		}
 		return new MyUserDetails(user);
 	}
