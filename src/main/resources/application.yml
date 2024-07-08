@@ -20,8 +20,9 @@ spring:
       client:
         registration:
          google:
-          clientId: YOUR_GOOGLE_APP_CLIENT_ID
-          clientSecret: YOUR_GOOGLE_APP_SECRET_KEY
+          #redirect-uri: http://localhost:8080/login/oauth2/code/google
+          clientId: 
+          clientSecret: 
           scope:
            - email
            - profile

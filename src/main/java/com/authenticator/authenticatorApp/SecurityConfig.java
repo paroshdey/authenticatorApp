@@ -1,8 +1,10 @@
 package com.authenticator.authenticatorApp;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,18 +15,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.authenticator.authenticatorApp.service.CustomOAuth2UserService;
 import com.authenticator.authenticatorApp.serviceImpl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-	@Autowired
-	private CustomOAuth2UserService oauth2UserService;
-
-	//@Autowired
-	//private OauthSuccessHandler oauthLoginSuccessHandler;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -48,18 +43,39 @@ public class SecurityConfig {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
 	}
-
+	
+	 @Bean
+	    public AuthenticationEventPublisher authenticationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+	        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+	    }
+	
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.exceptionHandling(e -> e.accessDeniedPage("/403"))
-				.headers(headers -> headers.frameOptions(FrameOptionsConfig::disable)).csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(authz -> authz.requestMatchers("/", "/**", "/login", "/oauth/**", "/console/**")
-						.permitAll().anyRequest().authenticated())
-				.formLogin(formLogin -> formLogin.loginPage("/login").permitAll().usernameParameter("email")
-						.passwordParameter("password").successForwardUrl("/index"))
-				.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.permitAll()
-						.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login"));
+				.headers(headers -> headers
+						.frameOptions(FrameOptionsConfig::disable))
+				        .csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(authz -> authz
+						.requestMatchers("/", "/**", "/login**", "/oauth/**", "/console/**")
+						.permitAll()
+						.anyRequest()
+						.authenticated())
+				.formLogin(formLogin -> formLogin
+				        .loginPage("/login")
+				        .permitAll()
+				        .usernameParameter("email")
+						.passwordParameter("password")
+						.successForwardUrl("/index"))
+				.oauth2Login(login -> login
+						.loginPage("/login")
+						.defaultSuccessUrl("/oauth"))
+				        
+				.logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+						.permitAll()
+						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+						.logoutSuccessUrl("/login"));
+		
 		return http.build();
 
 	}

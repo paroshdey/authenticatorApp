@@ -13,15 +13,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import com.authenticator.authenticatorApp.entity.Role;
 
 @Data
 @Entity
 @Table(name = "users")
-@AllArgsConstructor
 public class UserInfo {
+	public UserInfo() {
+		
+	}
 	
+	
+	public UserInfo(Long id, String username, String password, Set<Role> roles) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.roles = roles;
+	}
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

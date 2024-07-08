@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.authenticator.authenticatorApp.MyUserDetails;
-import com.authenticator.authenticatorApp.controller.HomeController;
 import com.authenticator.authenticatorApp.entity.UserInfo;
 import com.authenticator.authenticatorApp.repository.UserRepository;
 
@@ -26,11 +25,13 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		
 		UserInfo user = userRepo.getUserByUsername(username);
 		
-		if(user.getUsername() == null  || user.getUsername().isEmpty())
-		{
-			throw new UsernameNotFoundException("user does not exist ::"+username);
+		if(user != null ) {
+			return new MyUserDetails(user);	
 		}
-		return new MyUserDetails(user);
+		else {
+			throw new UsernameNotFoundException("user not found");
+		}
+		
 	}
 
 }
