@@ -20,16 +20,8 @@ spring:
       client:
         registration:
          google:
-          #redirect-uri: http://localhost:8080/login/oauth2/code/google
-          clientId: 
-          clientSecret: 
+          clientId: ${clientId}
+          clientSecret: ${clientSecret}
           scope:
            - email
-           - profile
-                    
-         facebook:
-          clientId: YOUR_FACEBOOK_APP_CLIENT_ID
-          clientSecret: YOUR_FACEBOOK_APP_SECRET_KEY
-          scope:
-           - email
-           - public_profile            
+           - profile            

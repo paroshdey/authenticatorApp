@@ -24,7 +24,6 @@ public class UserInfo {
 		
 	}
 	
-	
 	public UserInfo(Long id, String username, String password, Set<Role> roles) {
 		super();
 		this.id = id;

@@ -7,7 +7,5 @@ import com.authenticator.authenticatorApp.entity.AuthFailureDTO;
 
 @Repository
 public interface AuthFailureLoggingrepository extends CrudRepository<AuthFailureDTO, Long> {
-	
-	
 
 }

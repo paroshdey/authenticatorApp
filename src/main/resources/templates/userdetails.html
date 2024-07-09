@@ -11,7 +11,7 @@
 	<div layout:fragment="content">
 		<div sec:authorize="isAuthenticated()" class="text fw-light fs-6 lh-1">
 		<div sec:authorize="hasAuthority('OAUTH2_USER')" >		
-		        <p>Welcome <span th:text="${#authentication.principal.name}">parosh</span>!</p>
+		        <p>Welcome <span th:text="${name}">user</span>!</p>
 		        <p>You have successfully authenticated against google</p>
 		
 		</div>

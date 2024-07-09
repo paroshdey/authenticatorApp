@@ -1,12 +1,17 @@
 package com.authenticator.authenticatorApp.controller;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -25,18 +30,12 @@ public class HomeController {
     	logger.debug("in HomeController :: index()");
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	model.addAttribute("auth", authentication);
-    	System.out.println(authentication.toString());
     	return "userdetails";
     } 
-   
     @GetMapping({ "/oauth" })
-    public String oauth(Model model) {
+    public String oauth(Model model , @AuthenticationPrincipal OAuth2User principal) {
     	logger.debug("in HomeController :: oauth()");
-    	OAuth2AuthenticationToken loggedInUser =(OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-    	//Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    	//System.out.println(loggedInUser.toString());
-    	
-    	model.addAttribute("auth", loggedInUser);
+    	model.addAttribute("name", principal.getAttribute("name"));
     	return "userdetails";
     } 
 }

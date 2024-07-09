@@ -26,15 +26,10 @@ public class AuthFailureDTO {
 	private String username;
 	private String ip;
 	private String timeStamp;
-	
-	
-	
+		
 	public AuthFailureDTO() {
 		
 	}
-
-
-
 	public AuthFailureDTO(Long id, String username, String ip, String timeStamp) {
 		super();
 		this.id = id;
